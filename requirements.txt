@@ -1,3 +1,5 @@
 pythae
 huggingface_hub
 skimage
+dask
+torch
