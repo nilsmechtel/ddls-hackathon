@@ -1,0 +1,9 @@
+name: ddls_hackathon
+channels:
+  - conda-forge
+dependencies:
+  - pip
+  - python
+  - jupyterlab
+  - pip:
+    - -r requirements.txt
