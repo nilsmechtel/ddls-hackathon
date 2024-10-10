@@ -4,3 +4,4 @@ scikit-image
 dask
 torch
 lightning-bolts
+imagecodecs

@@ -8,7 +8,6 @@ import torch
 
 from bioimage_embed import infer
 
-torch.set_default_device("cuda")
 
 DATA_DIR = Path("./data")
 IMG_DIR = DATA_DIR / "test"
