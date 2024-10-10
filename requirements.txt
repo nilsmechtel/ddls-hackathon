@@ -1,7 +1,5 @@
-pythae
+bioimage_embed
 huggingface_hub
 scikit-image
 dask
-torch
-lightning-bolts
-imagecodecs
+umap-learn
