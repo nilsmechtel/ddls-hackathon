@@ -1,5 +1,13 @@
+import torch
+
 
 def infer(model, x):
+    assert type(x) == torch.Tensor, "Input must be a torch.Tensor"
+    assert x.dim() == 4, "Input tensor must have 4 dimensions (B, C, H, W)"
+    assert x.shape[1] == 3, "Input tensor must have 3 channels"
+    assert x.shape[2] == 224, "Input tensor must have height 224"
+    assert x.shape[3] == 224, "Input tensor must have width 224"
+
     # Encoder
     encoder_output = model.encoder(x)
     embeddings = encoder_output.embedding
