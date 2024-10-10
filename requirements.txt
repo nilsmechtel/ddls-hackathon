@@ -1,5 +1,5 @@
 pythae
 huggingface_hub
-skimage
+scikit-image
 dask
 torch
