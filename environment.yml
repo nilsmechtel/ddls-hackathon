@@ -16,5 +16,6 @@ dependencies:
   - zarr
   - pythae
   - lightning-bolts
+  - matplotlib
   - pip:
     - -r requirements.txt
