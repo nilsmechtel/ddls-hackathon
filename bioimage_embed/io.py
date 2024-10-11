@@ -1,25 +1,22 @@
 import dask
 import dask.array as da
 from itertools import product
-from pathlib import Path
 from skimage import io
-
-
-DATA_DIR = Path("./data")
-IMG_DIR = DATA_DIR / "test"
-
 
 def get_tensor_for_row_column(row: int, 
                               col: int,
                               n_channels: int = 3,
+                              channel_digits: int = 1,
                               n_fields: int = 4,
                               patch_size: int = 224,
                               x0_patches: list = [220, 640],
                               y0_patches: list = [220, 640],
                               plane: int = 1,
                               shape: tuple = (1080, 1080),
-                              dtype: str = "uint16"):
-    lazy_arrays = [dask.delayed(io.imread)(IMG_DIR / f"r{row:02d}c{col:02d}f{field:02d}p{plane:02d}-ch{channel:01d}sk1fk1fl1.tiff")
+                              dtype: str = "int16",
+                              img_dir: str = "./data/test",
+                              microscope_pattern: str="sk1fk1fl1") -> da.Array:
+    lazy_arrays = [dask.delayed(io.imread)(img_dir / f"r{row:02d}c{col:02d}f{field:02d}p{plane:02d}-ch{channel:0{channel_digits}d}{microscope_pattern}.tiff")
                         for field, channel in product(range(1, n_fields + 1), range(1, n_channels + 1))]
     lazy_arrays = [da.from_delayed(x, shape=shape, dtype=dtype) for x in lazy_arrays]
 
