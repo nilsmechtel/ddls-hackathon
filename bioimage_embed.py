@@ -1,6 +1,7 @@
 # import dask
 import dask.array as da
 from itertools import product
+import pandas as pd
 from pathlib import Path
 from pythae.models import AutoModel
 # from skimage import io
@@ -25,9 +26,15 @@ model = AutoModel.load_from_folder(MODEL_DIR)
 # Make dask array of images
 n_rows = 16
 n_cols = 24
-all_wells = []
+metadata_df = pd.read_csv(IMG_DIR / "PLATEMAP_conf3_labels.csv")
+index_map = {(row, col): n for n, (row, col) in enumerate(product(range(1, n_rows + 1), range(1, n_cols + 1)))}
+metadata_df["zarr_index"] = metadata_df.apply(lambda x: index_map[(x["row"], x["col"])], axis=1)
 
-for row, col in product(range(1, n_rows + 1), range(1, n_cols + 1)):
+selected_wells = metadata_df.query("labels != 'samples'")[["row", "col"]].reset_index(drop=True)
+selected_wells.to_csv(RESULTS_DIR / "selected_wells.csv")
+
+all_wells = []
+for row, col in selected_wells.values:
     this_well = get_tensor_for_row_column(row, col)  # shape: (16, 3, 224, 224)
     all_wells.append(this_well)
 
