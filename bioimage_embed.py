@@ -5,8 +5,9 @@ from pathlib import Path
 from pythae.models import AutoModel
 # from skimage import io
 import torch
+import time
 
-torch.set_default_device("cuda")
+# torch.set_default_device("cuda")
 
 from bioimage_embed import infer
 from bioimage_embed.io import get_tensor_for_row_column
@@ -22,8 +23,8 @@ RESULTS_DIR = Path("./results")
 model = AutoModel.load_from_folder(MODEL_DIR)
 
 # Make dask array of images
-n_rows = 2#16
-n_cols = 1#24
+n_rows = 16
+n_cols = 24
 all_wells = []
 
 for row, col in product(range(1, n_rows + 1), range(1, n_cols + 1)):
@@ -41,8 +42,12 @@ def run_for_patch(patch):
         out = infer(model, this_patch[None, ...])["quantized_embed"].squeeze(-1).squeeze(-1).numpy()
     return out[None, ...]
 
+start_time = time.perf_counter()
 # map all chunks to the function
 out = da.map_blocks(run_for_patch, all_wells, dtype="float32", drop_axis=[-3, -2, -1], new_axis=2, chunks=(1, 1, 12544))
 
 # Compute and save the results to a Zarr file
 out.to_zarr(RESULTS_DIR / "features.zarr", overwrite=True)
+end_time = time.perf_counter()
+
+print(f"Time taken: {end_time - start_time:.2f} seconds")
