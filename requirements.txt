@@ -1,6 +1,1 @@
-bioimage_embed
-huggingface_hub
-scikit-image
-dask
-umap-learn
-imagecodecs
+- bioimage_embed

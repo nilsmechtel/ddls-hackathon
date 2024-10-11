@@ -5,6 +5,12 @@ dependencies:
   - pip
   - python=3.10
   - jupyterlab
-  - numpy<=2.1.0
+  - numpy
+  - huggingface_hub
+  - scikit-image
+  - dask
+  - umap-learn
+  - imagecodecs
+  - zarr
   - pip:
     - -r requirements.txt
