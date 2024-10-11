@@ -3,3 +3,4 @@ huggingface_hub
 scikit-image
 dask
 umap-learn
+imagecodecs
