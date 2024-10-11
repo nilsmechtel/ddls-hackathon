@@ -1,33 +1,9 @@
-import torch
 import numpy as np
-from sklearn.decomposition import PCA
-import umap
 import matplotlib.pyplot as plt
 from matplotlib import cm
 
 
-def visualize_embeddings(quantized_embed: torch.Tensor, labels: list, outpath: str, pca_components: int=50):
-    # Ensure the embeddings are detached from the computation graph and moved to CPU
-    if quantized_embed.dim() == 4:
-        quantized_embed = quantized_embed.squeeze(-1).squeeze(-1)  # Remove the last two singleton dimensions
-    quantized_embed = quantized_embed.detach().cpu().numpy()    # Convert to NumPy array with dimensions [B, embedding_dim]
-
-    # Check the shape after reshaping
-    print(f"Embeddings shape: {quantized_embed.shape}")
-    
-    # Perform PCA for dimensionality reduction
-    pca_components = min(pca_components, min(quantized_embed.shape))
-    print(f"Performing PCA to reduce from {quantized_embed.shape[1]} to {pca_components} components...")
-    pca = PCA(n_components=pca_components, svd_solver="auto")  # Use svd_solver="auto"
-    pca_result = pca.fit_transform(quantized_embed)
-    print(f"Shape after PCA: {pca_result.shape}")
-    
-    # Fit UMAP on PCA-reduced embeddings
-    print("Performing UMAP...")
-    reducer = umap.UMAP(n_neighbors=15, min_dist=0.1, metric='euclidean')
-    embedding_2d = reducer.fit_transform(pca_result)
-    print(f"Shape after UMAP: {embedding_2d.shape}")
-
+def plot_umap(embedding_2d: np.array, labels: list, outpath: str):
     # Get unique labels and create a color map
     unique_labels = list(set(labels))
     label_map = {label: idx for idx, label in enumerate(unique_labels)}  # Map labels to numeric values
@@ -52,6 +28,7 @@ def visualize_embeddings(quantized_embed: torch.Tensor, labels: list, outpath: s
     print(f"UMAP plot saved to {outpath}")
 
 if __name__ == "__main__":
-    quantized_embed = torch.randn(16, 12544, 1, 1)  # Shape: [B, 12544, 1, 1]
+    # Example usage
+    embedding_2d = np.random.rand(16, 2)  # Random 2D embeddings for 16 samples
     labels = ["Control"] * 8 + ["Disease"] * 8  # Create test labels for the 16 samples
-    visualize_embeddings(quantized_embed, labels, "test_umap_plot.png")  # Pass labels to the function
+    plot_umap(embedding_2d, labels, "test_umap_plot.png")  # Plot the UMAP visualization and save it to a file
